@@ -1,7 +1,5 @@
 import run from "aocrunner";
 
-const parseInput = (rawInput: string) => rawInput;
-
 const findHighestIfSuccessful = (
   velocity: { x: number; y: number },
   target: { y: { min: number; max: number }; x: { min: number; max: number } },
@@ -23,8 +21,8 @@ const findHighestIfSuccessful = (
     }
 
     // Update position.
-    x += velocity.x;
-    y += velocity.y;
+    x += xVel;
+    y += yVel;
 
     // Update velocity.
     if (xVel > 0) {
@@ -37,24 +35,70 @@ const findHighestIfSuccessful = (
     if (y > highestY) {
       highestY = y;
     }
+
+    if (y < target.y.min) {
+      return -1;
+    }
+    if (x > target.x.max) {
+      return -1;
+    }
   }
 };
 
 const part1 = (rawInput: string) => {
-  const input = parseInput(rawInput);
+  // Read input manually.
+  const targetXMin = 185;
+  const targetXMax = 221;
+  const targetYMin = -122;
+  const targetYMax = -74;
 
-  const targetXMin = 0;
-  const targetXMax = 0;
-  const targetYMin = 0;
-  const targetYMax = 0;
+  let maxHeight = 0;
 
-  return;
+  for (let xVel = 0; xVel <= targetXMax; xVel++) {
+    // Ugly, but not sure how to decide which to check otherwise.
+    for (let yVel = -1000; yVel < 2000; yVel++) {
+      let height = findHighestIfSuccessful(
+        { x: xVel, y: yVel },
+        {
+          y: { min: targetYMin, max: targetYMax },
+          x: { min: targetXMin, max: targetXMax },
+        },
+      );
+      if (height > maxHeight) {
+        maxHeight = height;
+      }
+    }
+  }
+
+  return maxHeight;
 };
 
 const part2 = (rawInput: string) => {
-  const input = parseInput(rawInput);
+  // Read input manually.
+  const targetXMin = 185;
+  const targetXMax = 221;
+  const targetYMin = -122;
+  const targetYMax = -74;
 
-  return;
+  let hittingVelocities = 0;
+
+  for (let xVel = 0; xVel <= targetXMax; xVel++) {
+    // Ugly, but not sure how to decide which to check otherwise.
+    for (let yVel = -1000; yVel < 2000; yVel++) {
+      let height = findHighestIfSuccessful(
+        { x: xVel, y: yVel },
+        {
+          y: { min: targetYMin, max: targetYMax },
+          x: { min: targetXMin, max: targetXMax },
+        },
+      );
+      if (height >= 0) {
+        hittingVelocities++;
+      }
+    }
+  }
+
+  return hittingVelocities;
 };
 
 run({
